@@ -434,26 +434,24 @@ class baseModel():
 
 
         # Iterare su tutti i dati
-        for data, labels in dataLoader:  # 'data' e 'labels' sono tuple restituite dal DataLoader
-            with torch.enable_grad():
-                # Azzera i gradienti dei parametri
-                optimizer.zero_grad()
+        for data_batch, labels_batch in dataLoader:
+            # Zero the parameter gradients
+            optimizer.zero_grad()
 
-                # Forward pass:
-                output = self.net(data.unsqueeze(1).to(self.device))  # Unsqueeze se necessario (per esempio, aggiungere un canale)
+            # forward pass: compute predictions
+            output = self.net(data_batch.unsqueeze(1).to(self.device))  # Adjust the shape if necessary
 
-                # Calcolare la loss
-                loss = lossFn(output, labels.type(torch.LongTensor).to(self.device))  # Assicurati che labels siano LongTensor
-                loss = loss / data.shape[0]  # media della loss sui batch
+            # calculate loss
+            loss = lossFn(output, labels_batch.type(torch.LongTensor).to(self.device))
+            loss = loss / data_batch.shape[0]  # Normalize by batch size
 
-                # Backward pass:
-                loss.backward()
-                optimizer.step()
+            # backward pass: compute gradients
+            loss.backward()
+            optimizer.step()
 
-            # Accumulare la loss su tutti i mini-batch
+            # accumulate the loss over mini-batches
             running_loss += loss.item()
 
-        # Restituire la loss media per epoca
         return running_loss / len(dataLoader)
 
     def predict(self, data, sampler = None, lossFn = None):
