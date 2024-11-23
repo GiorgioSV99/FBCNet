@@ -40,8 +40,8 @@ def cv(datasetId = None, network = None, nGPU = None, subTorun=None):
     selectiveSubs = False
     
     # decide which data to operate on:
-    # datasetId ->  0:BCI-IV-2a data,    1: Korea data
-    datasets = ['bci42a', 'korea']
+    # datasetId ->  0:BCI-IV-2a data,    1: 2b
+    datasets = ['bci42a', 'bci42b']
     
     #%% Define all the model and training related options here.
     config = {}
@@ -57,7 +57,7 @@ def cv(datasetId = None, network = None, nGPU = None, subTorun=None):
     config['batchSize'] = 16
     
     if datasetId == 1:
-        config['modelArguments'] = {'nChan': 20, 'nTime': 1000, 'dropoutP': 0.5,
+        config['modelArguments'] = {'nChan': 3, 'nTime': 1000, 'dropoutP': 0.5,
                                     'nBands':9, 'm' : 32, 'temporalLayer': 'LogVarLayer',
                                     'nClass': 2, 'doWeightNorm': True}
     elif datasetId == 0:
