@@ -435,6 +435,7 @@ class baseModel():
 
         # Iterare su tutti i dati
         for data_batch, labels_batch in dataLoader:
+            print(f'Data shape: {data_batch.shape}')
             # Zero the parameter gradients
             optimizer.zero_grad()
 
