@@ -440,7 +440,7 @@ class baseModel():
             optimizer.zero_grad()
 
             # forward pass: compute predictions
-            output = self.net(data_batch.unsqueeze(1).to(self.device))  # Adjust the shape if necessary
+            output = self.net(data_batch.to(self.device))  # Adjust the shape if necessary
 
             # calculate loss
             loss = lossFn(output, labels_batch.type(torch.LongTensor).to(self.device))
@@ -497,7 +497,7 @@ class baseModel():
             # Iterate over all the data
             for data_batch, labels_batch in dataLoader:
                 # Forward pass: compute predictions
-                preds = self.net(data_batch.unsqueeze(1).to(self.device))  # Adjust the shape if necessary
+                preds = self.net(data_batch.to(self.device))  # Adjust the shape if necessary
                 totalCount += data_batch.shape[0]
 
                 if lossFn is not None:
