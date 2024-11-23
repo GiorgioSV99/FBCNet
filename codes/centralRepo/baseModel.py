@@ -432,27 +432,29 @@ class baseModel():
         dataLoader = DataLoader(trainData, batch_size= self.batchSize,
                                 shuffle= shuffle, sampler = sampler)
 
-        # iterate over all the data
-        for d in dataLoader:
+
+        # Iterare su tutti i dati
+        for data, labels in dataLoader:  # 'data' e 'labels' sono tuple restituite dal DataLoader
             with torch.enable_grad():
-                # zero the parameter gradients
+                # Azzera i gradienti dei parametri
                 optimizer.zero_grad()
 
-                # forward pass:
-                output = self.net(d['data'].unsqueeze(1).to(self.device))
+                # Forward pass:
+                output = self.net(data.unsqueeze(1).to(self.device))  # Unsqueeze se necessario (per esempio, aggiungere un canale)
 
-                # calculate loss
-                loss = lossFn(output, d['label'].type(torch.LongTensor).to(self.device))
-                loss = loss/d['data'].shape[0]
-                # backward pass:
+                # Calcolare la loss
+                loss = lossFn(output, labels.type(torch.LongTensor).to(self.device))  # Assicurati che labels siano LongTensor
+                loss = loss / data.shape[0]  # media della loss sui batch
+
+                # Backward pass:
                 loss.backward()
                 optimizer.step()
-            # accumulate the loss over mini-batches.
-            running_loss += loss.data
 
-        #print("In training, the training value is: ", self.net.training)
-        # return the present lass. This may be helpful to stop or continue the training.
-        return running_loss.item()/len(dataLoader)
+            # Accumulare la loss su tutti i mini-batch
+            running_loss += loss.item()
+
+        # Restituire la loss media per epoca
+        return running_loss / len(dataLoader)
 
     def predict(self, data, sampler = None, lossFn = None):
         '''
@@ -491,22 +493,25 @@ class baseModel():
         dataLoader = DataLoader(data, batch_size= batch_size, shuffle= False)
 
         # with no gradient tracking
+        # Disable gradient calculation
         with torch.no_grad():
-            # iterate over all the data
-            for d in dataLoader:
-                preds = self.net(d['data'].unsqueeze(1).to(self.device))
-                totalCount += d['data'].shape[0]
+            # Iterate over all the data
+            for data_batch, labels_batch in dataLoader:
+                # Forward pass: compute predictions
+                preds = self.net(data_batch.unsqueeze(1).to(self.device))  # Adjust the shape if necessary
+                totalCount += data_batch.shape[0]
 
                 if lossFn is not None:
-                    # calculate loss
-                    loss += lossFn(preds, d['label'].type(torch.LongTensor).to(self.device)).data
+                    # Calculate loss
+                    loss += lossFn(preds, labels_batch.type(torch.LongTensor).to(self.device)).item()
 
-                # Convert the output of soft-max to class label
+                # Convert the output of softmax to class labels
                 _, preds = torch.max(preds, 1)
                 predicted.extend(preds.data.tolist())
-                actual.extend(d['label'].tolist())
+                actual.extend(labels_batch.tolist())
 
-        return predicted, actual, torch.tensor(loss).item()/totalCount
+        # Return the predicted labels, actual labels, and average loss
+        return predicted, actual, loss / totalCount if lossFn is not None else None
 
     def calculateResults(self, yPredicted, yActual, classes = None):
         '''
