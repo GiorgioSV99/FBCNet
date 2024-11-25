@@ -87,7 +87,7 @@ class baseModel():
         optimFnArgs={},
         sampler=None,
         lr=0.001,
-        stopCondi={'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 1500, 'varName' : 'epoch'}},
+        stopCondi={'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 1000, 'varName' : 'epoch'}},
                                   'c2': {'NoDecrease': {'numEpochs' : 200, 'varName': 'valInacc'}} } }},
         loadBestModel=True,
         bestVarToCheck='valInacc',
@@ -245,8 +245,8 @@ class baseModel():
         lossFn = 'NLLLoss',
         optimFn = 'Adam',
         lr = 0.001,
-        stopCondi = {'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 500, 'varName' : 'epoch'}},
-                                               'c2': {'NoDecrease': {'numEpochs' : 50, 'varName': 'valLoss'}} } }},
+        stopCondi = {'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 1000, 'varName' : 'epoch'}},
+                                               'c2': {'NoDecrease': {'numEpochs' : 200, 'varName': 'valLoss'}} } }},
         optimFnArgs = {},
         loadBestModel = True,
         bestVarToCheck = 'valLoss',
@@ -370,7 +370,7 @@ class baseModel():
 
                         # define new stop criteria which is the training loss.
                         monitors['epoch'] = 0
-                        modifiedStop = {'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 600, 'varName' : 'epoch'}},
+                        modifiedStop = {'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 300, 'varName' : 'epoch'}},
                                                'c2': {'LessThan': {'minValue' : monitors['trainLoss'], 'varName': 'valLoss'}} } }}
                         stopCondition = stopCriteria.composeStopCriteria(**modifiedStop)
                     else:
@@ -434,6 +434,7 @@ class baseModel():
 
         # Iterare su tutti i dati
         for data_batch, labels_batch in dataLoader:
+            print(labels_batch)
             print(f'Data shape: {data_batch.shape}')
             # Zero the parameter gradients
             optimizer.zero_grad()
