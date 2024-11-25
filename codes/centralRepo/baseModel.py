@@ -38,9 +38,9 @@ import matplotlib.pyplot as plt
 import os
 import pickle
 import copy
-
-masterPath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(1, os.path.join(masterPath, 'centralRepo'))
+#!pip install stopCriteria
+#masterPath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#sys.path.insert(1, os.path.join(masterPath, 'centralRepo'))
 import stopCriteria
 import samplers
 
@@ -429,8 +429,7 @@ class baseModel():
             sampler = sampler(trainData)
 
         # Create the dataloader with random shuffle.
-        dataLoader = DataLoader(trainData, batch_size= self.batchSize,
-                                shuffle= shuffle, sampler = sampler)
+        dataLoader = DataLoader(trainData, batch_size=self.batchSize, shuffle=shuffle)
 
 
         # Iterare su tutti i dati
@@ -679,5 +678,4 @@ class baseModel():
             raise AssertionError('No loss function with name :' + lossString + ' can be found in torch.nn. The list of available options in this module are as follows: ' + str(nn.__dict__.keys()))
 
         return out
-
 
