@@ -30,7 +30,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader,TensorDataset
 import torch.utils.data.sampler as builtInSampler
 import sys
 from sklearn.metrics import confusion_matrix, accuracy_score
