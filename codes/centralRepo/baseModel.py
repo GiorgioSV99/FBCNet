@@ -373,7 +373,7 @@ class baseModel():
 
                         # define new stop criteria which is the training loss.
                         monitors['epoch'] = 0
-                        modifiedStop = {'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 300, 'varName' : 'epoch'}},
+                        modifiedStop = {'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 200, 'varName' : 'epoch'}},
                                                'c2': {'LessThan': {'minValue' : monitors['trainLoss'], 'varName': 'valLoss'}} } }}
                         stopCondition = stopCriteria.composeStopCriteria(**modifiedStop)
                     else:
