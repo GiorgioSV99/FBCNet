@@ -366,7 +366,10 @@ class baseModel():
                         earlyStopReached = True
                         print('Early stop reached now continuing with full set')
                         # Combine the train and validation dataset
-                        trainData.combineDataset(valData)
+                        trainData = TensorDataset(
+                         torch.cat((trainData.tensors[0], valData.tensors[0]), dim=0),  # Combina i dati
+                         torch.cat((trainData.tensors[1], valData.tensors[1]), dim=0)   # Combina le etichette
+                        )
 
                         # define new stop criteria which is the training loss.
                         monitors['epoch'] = 0
