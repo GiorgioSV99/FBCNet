@@ -590,7 +590,8 @@ class baseModel():
                 # Compute ISP loss (separability), if provided
                 if lossFn_isp is not None:
                     features = self.net.get_features()  # Extract features
-                    isp_loss = lossFn_isp(features)
+                    proxy = self.net.icp
+                    isp_loss = lossFn_isp(features,proxy,labels_batch)
                 else:
                     isp_loss = 0
 
