@@ -83,8 +83,8 @@ class baseModel():
         testData=None,
         classes=None,
         lossFn='NLLLoss',
-        loss_icp=None,
-        loss_isp=None,
+        loss_icp=NormIncreaseLoss(),
+        loss_isp=PrototypeLoss(),
         optimFns='Adam',
         optim_icp=None,
         optim_isp=None,
@@ -185,7 +185,7 @@ class baseModel():
         optimFnArgs, classes=classes, sampler=sampler,
         loadBestModel=loadBestModel, bestVarToCheck=bestVarToCheck,
         continueAfterEarlystop=continueAfterEarlystop,
-        loss_icp=NormIncreaseLoss(), loss_isp=PrototypeLoss(),
+        loss_icp=loss_icp, loss_isp=loss_isp,
         optim_icp=optim_icp, optim_isp=optim_isp
     )
         # store the results and netParm
@@ -247,8 +247,8 @@ class baseModel():
         trainData,
         valData,
         lossFn = 'NLLLoss',
-        loss_icp=None,
-        loss_isp=None,
+        loss_icp=NormIncreaseLoss(),
+        loss_isp=PrototypeLoss(),
         optim_icp=None,
         optim_isp=None,
         optimFn = 'Adam',
