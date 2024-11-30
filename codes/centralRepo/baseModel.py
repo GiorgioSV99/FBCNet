@@ -117,12 +117,12 @@ class baseModel():
         valData,
         testData=None,
         classes=None,
-        lossFn='NLLLoss',
-        loss_icp=NormIncreaseLoss(),
-        loss_isp=PrototypeLoss(),
+        lossFn,
+        loss_icp,
+        loss_isp,
         optimFns='Adam',
-        optim_icp=None,
-        optim_isp=None,
+        optim_icp,
+        optim_isp,
         optimFnArgs={},
         sampler=None,
         lr=0.001,
@@ -130,7 +130,7 @@ class baseModel():
                                   'c2': {'NoDecrease': {'numEpochs' : 200, 'varName': 'valLoss'}} } }},
         loadBestModel=True,
         bestVarToCheck='valLoss',
-        continueAfterEarlystop=False):
+        continueAfterEarlystop=True):
         """
         Apex function to train and test any network.
         Calls _trainOE for base training and adds the reporting capabilities.
@@ -207,7 +207,10 @@ class baseModel():
         original_net_dict = copy.deepcopy(self.net.state_dict())
 
         # set the details
-        expDetail = {'expNo': expNo, 'expParam': {'optimFn': optimFns,
+        expDetail = {'expNo': expNo, 'expParam': {'optimFn': optimFns,         'loss_icp':loss_icp,
+        'loss_isp':loss_isp,
+        'optim_icp':optim_icp,
+        'optim_isp':optim_isp,
                                                   'lossFn': lossFn, 'lr': lr,
                                                   'stopCondi': stopCondi}}
 
@@ -280,21 +283,20 @@ class baseModel():
         self,
         trainData,
         valData,
-        lossFn = 'NLLLoss',
-        loss_icp=NormIncreaseLoss(),
-        loss_isp=PrototypeLoss(),
-        optim_icp=None,
-        optim_isp=None,
+        lossFn,
+        loss_icp,
+        loss_isp,
+        optim_icp,
+        optim_isp,
         optimFn = 'Adam',
         lr = 0.001,
-        stopCondi = {'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 1000, 'varName' : 'epoch'}},
-                                               'c2': {'NoDecrease': {'numEpochs' : 200, 'varName': 'valLoss'}} } }},
+        stopCondi,
         optimFnArgs = {},
         loadBestModel = True,
         bestVarToCheck = 'valLoss',
-        continueAfterEarlystop = False,
-        classes = None,
-        sampler = None):
+        continueAfterEarlystop = True,
+        classes,
+        sampler):
         '''
         Internal function to perform the training.
         Do not directly call this function. Use train instead
@@ -425,7 +427,7 @@ class baseModel():
                         # define new stop criteria which is the training loss.
                         monitors['epoch'] = 0
                         modifiedStop = {'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 300, 'varName' : 'epoch'}},
-                                               'c2': {'LessThan': {'minValue' : monitors['valLoss'], 'varName': 'valLoss'}} } }}
+                                               'c2': {'LessThan': {'minValue' : monitors['trainLoss'], 'varName': 'valLoss'}} } }}
                         stopCondition = stopCriteria.composeStopCriteria(**modifiedStop)
                     else:
                         bestNet = copy.deepcopy(self.net.state_dict())
@@ -529,7 +531,7 @@ class baseModel():
 
         return running_loss / len(dataLoader)
 
-    def predict(self, data, lossFn_cls=None, lossFn_isp=None, lossFn_icp=None, sampler=None):
+    def predict(self, data, lossFn_cls, lossFn_isp, lossFn_icp, sampler):
         '''
         Predict the class of the input data and optionally calculate losses.
 
