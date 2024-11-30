@@ -369,7 +369,7 @@ class baseModel():
 
         while not doStop:
             # train the epoch.
-            loss.append(self.trainOneEpoch(trainData, lossFn_cls=lossFn, loss_icp=loss_icp, loss_pl=loss_isp, optimizerFn_cls=optimFn, optimizer_icp=optim_icp, optimizer_isp=optim_isp, sampler=sampler))
+            loss.append(self.trainOneEpoch(trainData, lossFn_cls=lossFn, loss_icp=loss_icp, loss_pl=loss_isp, optimizer_cls=optimFn, optimizer_icp=optim_icp, optimizer_isp=optim_isp, sampler=sampler))
 
             # evaluate the training and validation accuracy.
             pred, act, l = self.predict(trainData, sampler=sampler, lossFn=lossFn, loss_icp=loss_icp, loss_isp=loss_isp)
