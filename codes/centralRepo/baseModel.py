@@ -227,10 +227,10 @@ class baseModel():
 
         self.net.to(self.device)
         # If you are restoring the best model at the end of training then get the final results again.
-        pred, act, l = self.predict(trainData, sampler=sampler, lossFn=lossFn, loss_icp=loss_icp, loss_isp=loss_isp)
+        pred, act, l = self.predict(trainData, sampler=sampler, lossFn_cls=lossFn, loss_icp=loss_icp, loss_isp=loss_isp)
         trainResultsBest = self.calculateResults(pred, act, classes=classes)
         trainResultsBest['loss'] = l
-        pred, act, l = self.predict(valData, sampler=sampler, lossFn=lossFn)
+        pred, act, l = self.predict(valData, sampler=sampler, lossFn_cls=lossFn, loss_icp=loss_icp, loss_isp=loss_isp)
         valResultsBest = self.calculateResults(pred, act, classes=classes)
         valResultsBest['loss'] = l
         expDetail['results']['trainBest'] = trainResultsBest
@@ -238,7 +238,7 @@ class baseModel():
 
         # if test data is present then get the results for the test data.
         if testData is not None:
-            pred, act, l = self.predict(testData, sampler=sampler, lossFn=lossFn, loss_icp=loss_icp, loss_isp=loss_isp)
+            pred, act, l = self.predict(testData, sampler=sampler, lossFn_cls=lossFn, loss_icp=loss_icp, loss_isp=loss_isp)
             testResults = self.calculateResults(pred, act, classes=classes)
             testResults['loss'] = l
             expDetail['results']['test'] = testResults
@@ -373,12 +373,12 @@ class baseModel():
             loss.append(self.trainOneEpoch(trainData, lossFn_cls=lossFn, loss_icp=loss_icp, loss_pl=loss_isp, optimizer_cls=self.optimizer, optimizer_icp=optim_icp, optimizer_isp=optim_isp, sampler=sampler))
 
             # evaluate the training and validation accuracy.
-            pred, act, l = self.predict(trainData, sampler=sampler, lossFn=lossFn, loss_icp=loss_icp, loss_isp=loss_isp)
+            pred, act, l = self.predict(trainData, sampler=sampler, lossFn_cls=lossFn, loss_icp=loss_icp, loss_isp=loss_isp)
             trainResults.append(self.calculateResults(pred, act, classes=classes))
             trainLoss.append(l)
             monitors['trainLoss'] = l
             monitors['trainInacc'] = 1 - trainResults[-1]['acc']
-            pred, act, l = self.predict(valData, sampler=sampler, lossFn=lossFn, loss_icp=loss_icp, loss_isp=loss_isp)
+            pred, act, l = self.predict(valData, sampler=sampler, lossFn_cls=lossFn, loss_icp=loss_icp, loss_isp=loss_isp)
             valResults.append(self.calculateResults(pred, act, classes=classes))
             valLoss.append(l)
             monitors['valLoss'] = l
