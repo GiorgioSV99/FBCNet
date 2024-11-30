@@ -117,7 +117,7 @@ class baseModel():
         valData,
         testData=None,
         classes=None,
-        lossFn,
+        lossFn='CrossEntropyLoss',
         loss_icp,
         loss_isp,
         optimFns='Adam',
