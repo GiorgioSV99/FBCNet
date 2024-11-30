@@ -87,7 +87,7 @@ class baseModel():
         loss_isp=None,
         optimFns='Adam',
         optim_icp=None,
-        optim_isp=None
+        optim_isp=None,
         optimFnArgs={},
         sampler=None,
         lr=0.001,
@@ -253,7 +253,7 @@ class baseModel():
         loss_icp=None,
         loss_isp=None,
         optim_icp=None,
-        optim_isp=None
+        optim_isp=None,
         optimFn = 'Adam',
         lr = 0.001,
         stopCondi = {'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 1000, 'varName' : 'epoch'}},
