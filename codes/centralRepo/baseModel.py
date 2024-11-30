@@ -214,13 +214,12 @@ class baseModel():
 
         # Run the training and get the losses.
         trainResults = self._trainOE(
-        trainData, valData, lossFn, optimFns, lr, stopCondi,
-        optimFnArgs, classes=classes, sampler=sampler,
-        loadBestModel=loadBestModel, bestVarToCheck=bestVarToCheck,
-        continueAfterEarlystop=continueAfterEarlystop,
-        loss_icp=loss_icp, loss_isp=loss_isp,
-        optim_icp=optim_icp, optim_isp=optim_isp
-    )
+    trainData, valData, lossFn, loss_icp, loss_isp, optim_icp, optim_isp, 
+    optimFns, lr, stopCondi, optimFnArgs, 
+    loadBestModel=loadBestModel, bestVarToCheck=bestVarToCheck,
+    continueAfterEarlystop=continueAfterEarlystop,
+    classes=classes, sampler=sampler
+)
         # store the results and netParm
         expDetail['results'] = {'train': trainResults}
         expDetail['netParam'] = copy.deepcopy(self.net.to('cpu').state_dict())
@@ -287,7 +286,7 @@ class baseModel():
         optimFn = 'Adam',
         lr = 0.001,
         stopCondi = {'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 1000, 'varName' : 'epoch'}},
-                                               'c2': {'NoDecrease': {'numEpochs' : 300, 'varName': 'valLoss'}} } }},
+                                               'c2': {'NoDecrease': {'numEpochs' : 200, 'varName': 'valLoss'}} } }},
         optimFnArgs = {},
         loadBestModel = True,
         bestVarToCheck = 'valLoss',
@@ -370,7 +369,7 @@ class baseModel():
 
         while not doStop:
             # train the epoch.
-            loss.append(self.trainOneEpoch(trainData, lossFn, optim_icp, optim_isp, sampler=sampler))
+            loss.append(self.trainOneEpoch(trainData, lossFn_cls=lossFn, loss_icp=loss_icp, loss_pl=loss_isp, optimizerFn_cls=optimFn, optimizer_icp=optim_icp, optimizer_isp=optim_isp, sampler=sampler))
 
             # evaluate the training and validation accuracy.
             pred, act, l = self.predict(trainData, sampler=sampler, lossFn=lossFn, loss_icp=loss_icp, loss_isp=loss_isp)
