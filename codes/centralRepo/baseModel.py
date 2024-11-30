@@ -290,13 +290,14 @@ class baseModel():
         optim_isp,
         optimFn = 'Adam',
         lr = 0.001,
-        stopCondi,
+        stopCondi={'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 1000, 'varName' : 'epoch'}},
+                                  'c2': {'NoDecrease': {'numEpochs' : 200, 'varName': 'valLoss'}} } }},
         optimFnArgs = {},
         loadBestModel = True,
         bestVarToCheck = 'valLoss',
         continueAfterEarlystop = True,
-        classes,
-        sampler):
+        classes=None,
+        sampler=None):
         '''
         Internal function to perform the training.
         Do not directly call this function. Use train instead
