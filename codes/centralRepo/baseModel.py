@@ -163,10 +163,7 @@ class baseModel():
 
         # Create the loss function
         lossFn = self._findLossFn(lossFn)(reduction='sum')
-        if loss_icp is None:
-            loss_icp = NormIncreaseLoss()
-        if loss_isp is None:
-            loss_isp = PrototypeLoss()
+
         # store the experiment details.
         self.expDetails = []
 
@@ -188,7 +185,7 @@ class baseModel():
         optimFnArgs, classes=classes, sampler=sampler,
         loadBestModel=loadBestModel, bestVarToCheck=bestVarToCheck,
         continueAfterEarlystop=continueAfterEarlystop,
-        loss_icp=loss_icp, loss_isp=loss_isp,
+        loss_icp=NormIncreaseLoss(), loss_isp=PrototypeLoss(),
         optim_icp=optim_icp, optim_isp=optim_isp
     )
         # store the results and netParm
