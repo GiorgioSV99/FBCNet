@@ -519,7 +519,7 @@ class baseModel():
             pl_loss = loss_pl(features, proxy, labels_batch)  # Prototype loss
 
             # Total loss
-            total_loss = loss_cls + 0.00001 * pl_loss + 0.001 * icp_loss
+            total_loss = loss_cls + 0.001 * pl_loss + 0.00001 * icp_loss
 
             # Backward pass
             total_loss.backward()
@@ -605,7 +605,7 @@ class baseModel():
                     icp_loss = 0
 
                 # Total loss
-                total_loss += cls_loss + 0.00001 * isp_loss + 0.001 * icp_loss
+                total_loss += cls_loss + 0.001 * isp_loss + 0.00001 * icp_loss
 
                 # Convert the output of softmax to class labels
                 _, preds = torch.max(preds, 1)
