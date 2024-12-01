@@ -21,7 +21,8 @@
          3. optimizer -> the optimizer of type torch.optim.
          4. outFolder -> the folder where the results will be stored.
          5. preferedDevice -> 'gpu'/'cpu' -> will run on gpu only if it's
-             available
+        
+          available
     TODO: Include a learning rate scheduler in _trainOE.
     TODO: Add a good hyper-parameter optimizer in the train.
     @author: Ravikiran Mane
@@ -361,7 +362,7 @@ class baseModel():
         bestOptimizerState_isp = copy.deepcopy(optim_isp.state_dict())
 
         # Create optimizer
-        self.optimizer = self._findOptimizer(optimFn)(self.net.parameters(), lr = lr, **optimFnArgs)
+        self.optimizer = self._findOptimizer(optimFn)(self.net.parameters(), lr = lr, weight_decay = 0.01, **optimFnArgs)
         bestOptimizerState = copy.deepcopy(self.optimizer.state_dict())
 
         # Initialize the stop criteria
