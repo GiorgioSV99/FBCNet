@@ -428,7 +428,7 @@ class baseModel():
 
                         # define new stop criteria which is the training loss.
                         monitors['epoch'] = 0
-                        modifiedStop = {'c1': {'MaxEpoch': {'maxEpochs': 300, 'varName' : 'epoch'}}}
+                        modifiedStop = {'MaxEpoch': {'maxEpochs': 300, 'varName': 'epoch'}}
                         stopCondition = stopCriteria.composeStopCriteria(**modifiedStop)
                     else:
                         bestNet = copy.deepcopy(self.net.state_dict())
