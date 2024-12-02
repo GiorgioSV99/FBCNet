@@ -383,24 +383,19 @@ class baseModel():
             # train the epoch.
             loss.append(self.trainOneEpoch(trainData, lossFn_cls=lossFn, loss_icp=loss_icp, loss_pl=loss_isp, optimizer_cls=self.optimizer, optimizer_icp=optim_icp, optimizer_isp=optim_isp, sampler=sampler))
 
-            # evaluate the training and validation accuracy.
-            pred, act, l = self.predict(trainData, sampler=sampler, lossFn_cls=lossFn, lossFn_icp=loss_icp, lossFn_isp=loss_isp)
-            trainResults.append(self.calculateResults(pred, act, classes=classes))
-            trainLoss.append(l)
-            monitors['trainLoss'] = l
-            monitors['trainInacc'] = 1 - trainResults[-1]['acc']
-            pred, act, l = self.predict(valData, sampler=sampler, lossFn_cls=lossFn, lossFn_icp=loss_icp, lossFn_isp=loss_isp)
-            valResults.append(self.calculateResults(pred, act, classes=classes))
-            valLoss.append(l)
-            monitors['valLoss'] = l
-            monitors['valInacc'] = 1 - valResults[-1]['acc']
+            if valData is not None:
+                # Evaluate validation accuracy and loss
+                pred, act, l = self.predict(valData, sampler=sampler, lossFn_cls=lossFn, lossFn_icp=loss_icp, lossFn_isp=loss_isp)
+                valResults.append(self.calculateResults(pred, act, classes=classes))
+                valLoss.append(l)
+                monitors['valLoss'] = l
+                monitors['valInacc'] = 1 - valResults[-1]['acc']
 
-            # print the epoch info
-            print("\t \t Epoch "+ str(monitors['epoch']+1))
-            print("Train loss = "+ "%.3f" % trainLoss[-1] + " Train Acc = "+
-                  "%.3f" % trainResults[-1]['acc']+
-                  ' Val Acc = '+ "%.3f" % valResults[-1]['acc'] +
-                  " Val loss = "+ "%.3f" % valLoss[-1])
+            # Print epoch info
+            print("\t \t Epoch " + str(monitors['epoch'] + 1))
+            print("Train loss = " + "%.3f" % trainLoss[-1] + " Train Acc = " + "%.3f" % trainResults[-1]['acc'])
+            if valData is not None:
+                print("Val Acc = " + "%.3f" % valResults[-1]['acc'] + " Val loss = " + "%.3f" % valLoss[-1])
 
             if loadBestModel:
                 if monitors[bestVarToCheck] < bestValue:
