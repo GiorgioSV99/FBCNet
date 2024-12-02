@@ -425,7 +425,10 @@ class baseModel():
                          torch.cat((trainData.tensors[0], valData.tensors[0]), dim=0),  # Combina i dati
                          torch.cat((trainData.tensors[1], valData.tensors[1]), dim=0)   # Combina le etichette
                         )
-
+                        valData = TensorDataset(
+    torch.empty(0, *trainData.tensors[0].shape[1:]),  # Tensore vuoto con dimensioni compatibili
+    torch.empty(0, dtype=trainData.tensors[1].dtype)  # Etichette vuote
+)
                         # define new stop criteria which is the training loss.
                         monitors['epoch'] = 0
                         modifiedStop = {'MaxEpoch': {'maxEpochs': 300, 'varName': 'epoch'}}
