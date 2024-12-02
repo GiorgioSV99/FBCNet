@@ -235,7 +235,13 @@ class baseModel():
         pred, act, l = self.predict(trainData, sampler=sampler, lossFn_cls=lossFn, lossFn_icp=loss_icp, lossFn_isp=loss_isp)
         trainResultsBest = self.calculateResults(pred, act, classes=classes)
         trainResultsBest['loss'] = l
-        pred, act, l = self.predict(valData, sampler=sampler, lossFn_cls=lossFn, lossFn_icp=loss_icp, lossFn_isp=loss_isp)
+        if valData is not None:
+            pred, act, l = self.predict(valData, sampler=sampler, lossFn_cls=lossFn, lossFn_icp=loss_icp, lossFn_isp=loss_isp)
+            valResultsBest = self.calculateResults(pred, act, classes=classes)
+            valResultsBest['loss'] = l
+        else:
+            print("Validation dataset is empty, skipping validation step.")
+            valResultsBest = {'loss': None, 'acc': None}
         valResultsBest = self.calculateResults(pred, act, classes=classes)
         valResultsBest['loss'] = l
         expDetail['results']['trainBest'] = trainResultsBest
@@ -258,7 +264,7 @@ class baseModel():
         if testData is not None:
             print('\n Test Results: ')
             print(expDetail['results']['test'])
-
+        
         # save the results
         if self.resultsSavePath is not None:
 
@@ -425,10 +431,7 @@ class baseModel():
                          torch.cat((trainData.tensors[0], valData.tensors[0]), dim=0),  # Combina i dati
                          torch.cat((trainData.tensors[1], valData.tensors[1]), dim=0)   # Combina le etichette
                         )
-                        valData = TensorDataset(
-    torch.empty(0, *trainData.tensors[0].shape[1:]),  # Tensore vuoto con dimensioni compatibili
-    torch.empty(0, dtype=trainData.tensors[1].dtype)  # Etichette vuote
-)
+                        valData = None
                         # define new stop criteria which is the training loss.
                         monitors['epoch'] = 0
                         modifiedStop = {'MaxEpoch': {'maxEpochs': 300, 'varName': 'epoch'}}
