@@ -393,7 +393,7 @@ class baseModel():
 
             # Print epoch info
             print("\t \t Epoch " + str(monitors['epoch'] + 1))
-            print("Train loss = " + "%.3f" % trainLoss[-1] + " Train Acc = " + "%.3f" % trainResults[-1]['acc'])
+            #print("Train loss = " + "%.3f" % trainLoss[-1] + " Train Acc = " + "%.3f" % trainResults[-1]['acc'])
             if valData is not None:
                 print("Val Acc = " + "%.3f" % valResults[-1]['acc'] + " Val loss = " + "%.3f" % valLoss[-1])
 
