@@ -25,7 +25,35 @@ from saveData import fetchData
 
 # reporting settings
 debug = False
+class PrototypeLoss(nn.Module):
 
+    def forward(self, features, proxy, labels):
+
+        label_prototypes = torch.index_select(proxy, dim=0, index=labels)
+
+        pl = huber_loss(features, label_prototypes, sigma=1)
+        pl_loss = torch.mean(pl)
+
+        return pl_loss
+
+
+def huber_loss(input, target, sigma=1):
+    beta = 1.0 / (sigma**2)
+    diff = torch.abs(input - target)
+    cond = diff < beta
+    loss = torch.where(cond, 0.5 * diff**2 / beta, diff - 0.5 * beta)
+
+    return torch.sum(loss, dim=1)
+
+class NormIncreaseLoss(nn.Module):
+    def __init__(self):
+        super(NormIncreaseLoss, self).__init__()
+
+    def forward(self, mat):
+
+        norms = torch.norm(mat, p=2, dim=1)
+        loss = -norms
+        return loss.mean()
 def ho(datasetId = None, network = None, nGPU = None, subTorun=None):
 
     #%% Set the defaults use these to quickly run the network
@@ -276,7 +304,29 @@ def ho(datasetId = None, network = None, nGPU = None, subTorun=None):
         
         outPathSub = os.path.join(config['outPath'], 'sub'+ str(iSub))
         model = baseModel(net=net, resultsSavePath=outPathSub, batchSize= config['batchSize'], nGPU = nGPU)
-        model.train(trainData, valData, testData, **config['modelTrainArguments'])
+        optimizer4isp = torch.optim.Adam(
+    [{"params": edpnet.isp, "lr": 0.001}]
+)
+        optimizer4icp = torch.optim.Adam(
+    [{"params": edpnet.icp, "lr": 0.001}]
+)
+        model.train(
+    trainData=train_dataset,
+    valData=val_dataset,
+    testData=test_dataset,
+    classes=[0,1,2,3],
+    lr=0.001,
+    lossFn='CrossEntropyLoss',
+    loss_icp=NormIncreaseLoss(),
+    loss_isp=PrototypeLoss(),
+    optim_icp=optimizer4icp,
+    optim_isp=optimizer4isp,
+    stopCondi={'c': {'Or': {'c1': {'MaxEpoch': {'maxEpochs': 1000, 'varName' : 'epoch'}},
+                                  'c2': {'NoDecrease': {'numEpochs' : 200, 'varName': 'valLoss'}} } }},
+    loadBestModel=True,
+    bestVarToCheck='valLoss',
+    continueAfterEarlystop=True
+)
         
         # extract the important results.
         trainResults.append([d['results']['trainBest'] for d in model.expDetails])
