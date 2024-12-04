@@ -25,6 +25,8 @@ from saveData import fetchData
 
 # reporting settings
 debug = False
+import torch
+import torch.nn as nn
 class PrototypeLoss(nn.Module):
 
     def forward(self, features, proxy, labels):
