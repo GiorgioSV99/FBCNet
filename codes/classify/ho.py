@@ -60,11 +60,8 @@ def ho(datasetId = None, network = None, nGPU = None, subTorun=None):
 
     #%% Set the defaults use these to quickly run the network
     datasetId = datasetId or 0
-    !git clone https://github.com/GiorgioSV99/SST-DPN.git
-    %cd SST-DPN
-    from model import SST_DPN
-    network = SST_DPN(chans=22, samples=1000, num_classes=4, F1=9,
-                     F2=48, time_kernel1=75, pool_kernels=[50, 100, 200])
+
+    network = network
     nGPU = nGPU or 0
     subTorun= subTorun or None
     selectiveSubs = False
